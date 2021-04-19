@@ -85,9 +85,9 @@ class Game {
     this.lifes = 3;
     
     Game.lifesContainer.innerHTML = `
-    <img class="game__life" src="https://cdn2.iconfinder.com/data/icons/free-1/128/Love__heart_like-512.png" class="heart" id="firstLife" alt="Life icon 1">
-        <img class="game__life" src="https://cdn2.iconfinder.com/data/icons/free-1/128/Love__heart_like-512.png" class="heart" id="secondLife" alt="Life icon 2">
-        <img class="game__life" src="https://cdn2.iconfinder.com/data/icons/free-1/128/Love__heart_like-512.png" class="heart" id="thirdLife" alt="Life icon 3">
+    <img class="game__life" src="images/heart.png"" class="heart" id="firstLife" alt="Life icon 1">
+        <img class="game__life" src="images/heart.png"" class="heart" id="secondLife" alt="Life icon 2">
+        <img class="game__life" src="images/heart.png"" class="heart" id="thirdLife" alt="Life icon 3">
     `;
     Game.input.value = '';
     
