@@ -1,51 +1,106 @@
-let level, lifesLeft;
-level = 1;
-lifesLeft = 3;
+class Game {
+  static input = document.querySelector('#input');
+  static button = document.querySelector('#button');
+  static lifesContainer = document.querySelector('#lifes');
 
-function check() {
-    let randomNumber, userAnswer, diapason;
+  static rulesText = document.querySelector('#rules');
+  static roundText = document.querySelector('#round');
+  static pointsText = document.querySelector('#points');
 
-    randomNumber = Math.random(randomNumber) * level;
-    randomNumber = Math.round(randomNumber);
-
-    userAnswer = document.getElementById('userInput').value;
-
-    diapason = document.getElementById('numberDiapason');
+  constructor() {
+    this.points = 0;
+    this.round = 1;
+    this.lifes = 3;
     
-    if (userAnswer == '') {
-        alert('Введите число');
+    this.generateNewRandomNumber();
+
+    Game.button.addEventListener('click', this.checkAnswer.bind(this));
+    Game.input.addEventListener('input', this.switchButton);
+    
+    Game.button.disabled = true;
+  }
+
+  generateNewRandomNumber() {
+    if (this.round === 1) {
+      this.randomNumber = Math.round(Math.random());
+    } else {
+      this.randomNumber = Math.round(Math.random() * this.round);
+    }
+  }
+
+  switchButton() {
+    if (Game.input.value === '') {
+      Game.button.disabled = true;
+      Game.button.style.cursor = 'not-allowed';
+    } else {
+      Game.button.disabled = false;
+      Game.button.style.cursor = 'pointer';
+    }
+  }
+
+  checkAnswer() {
+    const userAnswer = Number(Game.input.value);
+
+    if (userAnswer === this.randomNumber) {
+      this.nextRound();
+    } else {
+      this.removeOneLife()
     }
 
-    else if(randomNumber == userAnswer) {
-        level += 1;
-        diapason.innerHTML = 'Угадайте целое число от 0 до ' + level + ', включительно: ';
+    Game.input.focus();
+  }
 
-        alert(`
-        Правильно✅
-        Загаданное число - ${randomNumber}
-        Ваш ответ - ${userAnswer}
-        `);
-    }
+  nextRound() {
+    this.points += 5;
+    this.round++;
+    this.generateNewRandomNumber();
 
-    else {
-        lifesLeft -= 1;
-        alert(`\nНеправильно❌
-    Загаданное число - ${randomNumber}
-    Ваш ответ - ${userAnswer}`);
-    }
+    alert('Correct!');
 
-    if (lifesLeft == 2) {
-        document.querySelector('#thirdLife').remove();
-    }
-    else if (lifesLeft == 1) {
-        document.querySelector('#secondLife').remove();
-    }
-    else if (lifesLeft == 0) {
-        document.querySelector('#firstLife').remove();
-        alert(`Game over 💀
+    this.updateView();
+  }
 
-        Перезагружаю страницу и начинаю игру заново ;(
-        `);
-        location.reload();
+  removeOneLife() {
+    this.lifes--;
+
+    if (this.lifes === 0) {
+      this.gameOver();
+    } else {
+      const hearts = Game.lifesContainer.children;
+
+      Game.lifesContainer.removeChild(
+        hearts[hearts.length - 1]
+      );
+
+      alert('Incorrect! Try again!');
     }
+  }
+
+  gameOver() {
+    alert(`Game over 💀 | The number was ${this.randomNumber}
+    Round: ${this.round} | Points: ${this.points}`);
+    
+    this.points = 0;
+    this.round = 1;
+    this.lifes = 3;
+    
+    Game.lifesContainer.innerHTML = `
+    <img class="game__life" src="https://cdn2.iconfinder.com/data/icons/free-1/128/Love__heart_like-512.png" class="heart" id="firstLife" alt="Life icon 1">
+        <img class="game__life" src="https://cdn2.iconfinder.com/data/icons/free-1/128/Love__heart_like-512.png" class="heart" id="secondLife" alt="Life icon 2">
+        <img class="game__life" src="https://cdn2.iconfinder.com/data/icons/free-1/128/Love__heart_like-512.png" class="heart" id="thirdLife" alt="Life icon 3">
+    `;
+    Game.input.value = '';
+    
+    this.switchButton();
+    this.updateView();
+  }
+
+  updateView() {
+    Game.input.max = this.round;
+    Game.roundText.textContent = `Round ${this.round}`;
+    Game.pointsText.textContent = `Points ${this.points}`;
+    Game.rulesText.textContent = `Guess a number between (0-${this.round})`;
+  }
 }
+
+const game = new Game();
